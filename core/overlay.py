@@ -26,6 +26,20 @@ class CatOverlay(QWidget):
         self.resize(pixmap.width(), pixmap.height())
 
 
+    def _clamp_to_screen(self, target_x, target_y, screen):
+        geom = screen.geometry() 
+        
+        min_x = geom.x()
+        min_y = geom.y()
+        max_x = min_x + geom.width() - self.width()
+        max_y = min_y + geom.height() - self.height()
+        
+        clamped_x = max(min_x, min(target_x, max_x))
+        clamped_y = max(min_y, min(target_y, max_y))
+        
+        return clamped_x, clamped_y
+
+
     def mousePressEvent(self, e: QMouseEvent) -> None:
         if e.button() == Qt.MouseButton.LeftButton:
             self.old_pos = e.globalPosition().toPoint()
@@ -34,7 +48,15 @@ class CatOverlay(QWidget):
     def mouseMoveEvent(self, e: QMouseEvent) -> None:
         if self.old_pos != None:
             delta = e.globalPosition().toPoint() - self.old_pos
-            self.move(self.x() + delta.x(), self.y() + delta.y())
+
+            target_x = self.x() + delta.x()
+            target_y = self.y() + delta.y()
+
+            current_screen = self.screen()
+            if current_screen:
+                target_x, target_y = self._clamp_to_screen(target_x, target_y, current_screen)
+
+            self.move(target_x, target_y)
             self.old_pos = e.globalPosition().toPoint()
 
 
