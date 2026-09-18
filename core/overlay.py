@@ -1,5 +1,5 @@
-from PyQt6.QtWidgets import QLabel, QVBoxLayout, QWidget
-from PyQt6.QtGui import QMouseEvent, QPixmap
+from PyQt6.QtWidgets import QApplication, QLabel, QMenu, QWidget
+from PyQt6.QtGui import QAction, QContextMenuEvent, QMouseEvent, QPixmap
 from PyQt6.QtCore import Qt
 
 
@@ -35,6 +35,8 @@ class CatOverlay(QWidget):
 
         self.label.setPixmap(scaled_pixmap)
         self.resize(scaled_pixmap.width(), scaled_pixmap.height())
+
+        self.setMask(scaled_pixmap.mask())
 
 
     def _clamp_to_screen(self, target_x, target_y, screen):
@@ -74,3 +76,18 @@ class CatOverlay(QWidget):
     def mouseReleaseEvent(self, e: QMouseEvent) -> None:
         if e.button() == Qt.MouseButton.LeftButton:
             self.old_pos = None
+
+
+    def toggle_visibilty(self):
+        self.setVisible(not self.isVisible())
+
+
+    def contextMenuEvent(self, e: QContextMenuEvent) -> None:
+        context_menu = QMenu(self)
+
+        quit_action = QAction("Quit", self)
+        quit_action.triggered.connect(QApplication.quit)
+
+        context_menu.addAction(quit_action)
+
+        context_menu.exec(e.globalPos())
