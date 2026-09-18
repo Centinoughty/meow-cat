@@ -85,6 +85,34 @@ class CatOverlay(QWidget):
     def contextMenuEvent(self, e: QContextMenuEvent) -> None:
         context_menu = QMenu(self)
 
+        context_menu.setStyleSheet("""
+            QMenu {
+                background-color: #2d2d2d;
+                color: #e0e0e0;
+                border: 1px solid #3d3d3d;
+                border-radius: 8px;
+                padding: 4px;
+                font-family: 'Segoe UI', Arial, sans-serif;
+                font-size: 13px;
+            }
+            QMenu::item {
+                padding: 6px 24px 6px 24px;
+                border-radius: 4px;
+                margin: 2px 0px;
+            }
+            QMenu::item:selected {
+                background-color: #4a90e2;
+                color: #ffffff;
+            }
+            QMenu::separator {
+                height: 1px;
+                background-color: #3d3d3d;
+                margin: 4px 8px;
+            }
+        """)
+
+        context_menu.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
+
         quit_action = QAction("Quit", self)
         quit_action.triggered.connect(QApplication.quit)
 
