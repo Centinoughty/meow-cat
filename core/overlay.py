@@ -21,9 +21,20 @@ class CatOverlay(QWidget):
         self.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
 
         self.label = QLabel(self)
-        pixmap = QPixmap(self.image_path)
-        self.label.setPixmap(pixmap)
-        self.resize(pixmap.width(), pixmap.height())
+        og_pixmap = QPixmap(self.image_path)
+
+        target_width = 150
+        target_height = 150
+
+        scaled_pixmap = og_pixmap.scaled(
+            target_width, 
+            target_height, 
+            Qt.AspectRatioMode.KeepAspectRatio, 
+            Qt.TransformationMode.SmoothTransformation
+        )
+
+        self.label.setPixmap(scaled_pixmap)
+        self.resize(scaled_pixmap.width(), scaled_pixmap.height())
 
 
     def _clamp_to_screen(self, target_x, target_y, screen):
